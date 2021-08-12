@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{%block title%}{{title}}{%endblock%}
+
+{% block content%}
+<div class="container">
+    <div class="main-body">
+        <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="{{ user.photo.url }}"
+                                 class="rounded-circle" width="150">
+                            <div class="mt-3">
+                                <h4>@{{user.username}}</h4>
+                                <p class="text-secondary mb-1">{{user.bio}}</p>
+                                <p class="text-muted font-size-sm">{{user.address}}</p>
+                                {% if not request.user.pk == user.pk%}
+                                <button class="btn btn-primary">Follow</button>
+                                <button class="btn btn-outline-primary">Message</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Full Name</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{user.first_name}} {{user.last_name}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Email</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{user.email}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Mobile</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{user.mobile}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Address</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{user.address}}
+                            </div>
+                        </div>
+                        <hr>
+                        {% if request.user.pk == user.pk%}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#edit_center">
+                                    Edit
+                                </button>
+                                <div class="modal fade" id="edit_center" tabindex="-1" role="dialog"
+                                     aria-labelledby="edit_center_title" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="edit_long_title">Editing</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="post" enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                                    {{edit_form.as_p}}
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">
+                                                            Close
+                                                        </button>
+                                                        <button type="submit" name="edit_form" class="btn btn-primary">
+                                                            Save changes
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif%}
+                    </div>
+                </div>
+            </div>
+            {% if request.user.pk == user.pk%}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{post_form.as_p}}
+                <button type="submit" name="post_form" class="btn btn-primary" data-toggle="modal"
+                        data-target="#exampleModal">
+                    Post
+                </button>
+            </form>
+            {% endif%}
+
+            {% for i in posts%}
+            <div class="card">
+                {% if request.user.pk == user.pk%}
+                <div class="modal-footer">
+                    <small>{{i.created_at|timesince}} ago</small>
+
+                    <form action="/delete_post/{{i.pk}}/" method="post">
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-danger" data-toggle="modal"
+                                data-target="#delete_post">
+                            Delete post
+                        </button>
+
+                        <div class="modal fade" id="delete_post" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Do you really want to delete this post?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                        </button>
+                                        <button type="submit" class="btn btn-danger ">
+                                            Yes, delete it
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {% endif%}
+
+                {% if i.photo %}
+                <img src="{{ i.photo.url }}" width="550">
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{i.text}}</p>
+                </div>
+                <div>
+                    <a href="{{i.get_absolute_url}}" class="btn btn-primary">Comments and likes</a>
+                </div>
+            </div>
+            {% endfor%}
+        </div>
+    </div>
+</div>
+{%endblock%}

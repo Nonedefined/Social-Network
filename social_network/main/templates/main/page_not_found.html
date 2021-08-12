@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{%block title%}Page not found{%endblock%}
+
+
+{% block content%}
+<center>
+    <div class="card" style="width: 38rem;">
+        <img src="http://artismedia.by/blog/wp-content/uploads/2018/05/in-blog2-1.png" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">Page not found</h5>
+            <a href="{% url 'main'%}" class="btn btn-primary">Go main</a>
+        </div>
+    </div>
+</center>
+
+{%endblock%}

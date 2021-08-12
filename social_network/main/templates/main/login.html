@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{%block title%}{{title}}{%endblock%}
+
+{% block content%}
+<center>
+    <div class="card" style="width: 40rem;">
+    <h1>Authorization</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-primary">
+            Login
+        </button>
+        <div class="card">
+            <div class="card-body">
+                Don’t have an account?
+                <a href="{% url 'register'%}">Register now</a>
+            </div>
+        </div>
+    </form>
+</div>
+</center>
+
+
+{%endblock%}

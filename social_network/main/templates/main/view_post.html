@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{%block title%}{{title}}{%endblock%}
+
+{% block content%}
+<div class="container">
+    {% if post.user.photo %}
+    <img src="{{ post.user.photo.url }}"
+         class="rounded-circle" width="100">
+    {% else %}
+    <img src="https://chto-takoe-lyubov.net/wp-content/uploads/2017/08/voprositelnyy-znak-stikhi.jpg"
+         class="rounded-circle" width="150">
+    {% endif %}
+    <div class="mt-3">
+        <h4><a href="{{post.user.get_absolute_url}}">{{post.user.username}}</a></h4>
+    </div>
+    <div class="main-body">
+        <div class="row gutters-sm">
+            <div class="card">
+                {% if post.photo %}
+                <img src="{{ post.photo.url }}" width="550">
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{post.text}}</p>
+                </div>
+                {% if is_liked %}
+                <div>
+                    <a href="/like_post/{{post.pk}}/" class="btn btn-danger">{{likes_amount}} ❤</a>
+                </div>
+                {% else %}
+                <div>
+                    <a href="/like_post/{{post.pk}}/" class="btn btn-primary">{{likes_amount}} ❤</a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer text-muted">
+                {{news.created_at}}
+            </div>
+            <br>
+            {% if request.user.is_authenticated%}
+            <form method="post">
+                {% csrf_token %}
+                <div class="card">
+                    <div class="comment-box ml-2">
+                        {{form.as_p}}
+                        <div class="col-6">
+                            <div>
+                                <button type="submit" class="btn btn-primary">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {% else%}
+            <a href="{% url 'login'%}" class="btn btn-primary">Login to post comments</a>
+            {% endif %}
+            {% for i in comments%}
+            <div class="container mt-5">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="user d-flex flex-row align-items-center"><img
+                                        src="{{ i.user.photo.url }}" width="70"
+                                        class="user-img rounded-circle mr-2"> <span><small
+                                        class="font-weight-bold text-primary"><a href="{{i.user.get_absolute_url}}">{{i.user.username}}</a></small></span>
+                                </div>
+                                <small>{{i.created_at|timesince}} ago</small>
+                            </div>
+                            <div class="action d-flex justify-content-between mt-2 align-items-center">
+                                {{i.text}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor%}
+        </div>
+
+    </div>
+</div>
+{%endblock%}
