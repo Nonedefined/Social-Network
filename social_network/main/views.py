@@ -117,7 +117,6 @@ def like_post(request, post_id):
         return redirect("login")
 
 
-
 def register(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
