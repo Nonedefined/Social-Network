@@ -43,3 +43,12 @@ class PostLike(models.Model):
     is_liked = models.BooleanField(default=False)
 
 
+class Chat(models.Model):
+    user = models.ManyToManyField(Account, null=True)
+
+
+class MessageChat(models.Model):
+    text = models.TextField()
+    user = models.ForeignKey(Account, on_delete=models.CASCADE, null=True)
+    chat = models.ForeignKey(Chat, on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{%block title%}{{title}}{%endblock%}
+
+{% block content%}
+<div class="container py-3 px-3">
+    <div class="row rounded-lg overflow-hidden shadow">
+        <div class="d-flex flex-column align-items-center text-center">
+            <img src="{{ to_user.photo.url }}"
+                 class="rounded-circle" width="150">
+            <div class="mt-3">
+                <h3><a href="{{to_user.get_absolute_url}}">{{to_user.username}}</a></h3>
+            </div>
+        </div>
+        <div class="px-4 py-5 chat-box bg-white">
+            {%for message in messages_in_chat%}
+            {% if message.user == from_user%}
+            <div class="media w-50 ml-auto mb-3">
+                <div class="media-body">
+                    <div class="bg-primary rounded py-2 px-3 mb-2">
+                        <p class="text-small mb-0 text-white">{{message.text}}</p>
+                    </div>
+                    <p class="small text-muted">{{message.created_at|timesince}} ago</p>
+                </div>
+            </div>
+            {% else%}
+            <div class="media w-50 mb-3"><img src="{{ to_user.photo.url }}"
+                                              class="rounded-circle" width="50">
+                <div class="media-body ml-3">
+                    <div class="bg-light rounded py-2 px-3 mb-2">
+                        <p class="text-small mb-0 text-muted">{{message.text}}</p>
+                    </div>
+                    <p class="small text-muted">{{message.created_at|timesince}} ago</p>
+                </div>
+            </div>
+            {%endif%}
+            {% endfor %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="comment-box ml-2">
+                    {{form.as_p}}
+                    <div class="col-6">
+                        <div>
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{%endblock%}

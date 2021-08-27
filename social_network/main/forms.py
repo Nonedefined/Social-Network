@@ -45,6 +45,18 @@ class PostForm(forms.ModelForm):
         }
 
 
+class MessageChatForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ["text"]
+        labels = {
+            "text": ""
+        }
+        widgets = {
+            "text": forms.Textarea(attrs={"class": "form-control", "rows": 5, "placeholder": "Type a message"}),
+        }
+
+
 class CommentForm(forms.Form):
     text = forms.CharField(label="", widget=forms.Textarea(attrs={"class": "form-control",
                                                             "rows": 4,

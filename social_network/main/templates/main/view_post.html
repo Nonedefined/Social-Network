@@ -39,13 +39,11 @@
             {% if request.user.is_authenticated%}
             <form method="post">
                 {% csrf_token %}
-                <div class="card">
-                    <div class="comment-box ml-2">
-                        {{form.as_p}}
-                        <div class="col-6">
-                            <div>
-                                <button type="submit" class="btn btn-primary">Send</button>
-                            </div>
+                <div class="comment-box ml-2">
+                    {{form.as_p}}
+                    <div class="col-6">
+                        <div>
+                            <button type="submit" class="btn btn-primary">Send</button>
                         </div>
                     </div>
                 </div>

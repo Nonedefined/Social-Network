@@ -4,7 +4,7 @@ from .forms import *
 from django.contrib import messages
 
 
-def home(request):
+def main(request):
     users = Account.objects.all()
     context = {"users": users, "title": "Main"}
     return render(request, "main/main.html", context)
@@ -61,6 +61,36 @@ def view_user(request, user_id):
         else:
             return redirect("login")
     except:
+        return render(request, "main/page_not_found.html")
+
+
+def message_user(request, user_id):
+    try:
+        to_user = Account.objects.get(pk=user_id)
+        from_user = Account.objects.get(pk=request.user.pk)
+        try:
+            chat = Chat.objects.filter(user=to_user).get(user=from_user)
+        except:
+            chat = Chat.objects.create()
+            chat.user.add(to_user, from_user)
+            chat.save()
+
+        messages_in_chat = MessageChat.objects.filter(chat=chat)
+
+        if request.method == "POST":
+            form = MessageChatForm(request.POST)
+            if form.is_valid():
+                text = form.cleaned_data['text']
+                MessageChat.objects.create(text=text, user=from_user, chat=chat).save()
+                return redirect("message_user", user_id)
+        else:
+            form = MessageChatForm()
+
+        context = {"to_user": to_user, "from_user": from_user,
+                   "messages_in_chat": messages_in_chat, "form": form, "title": f"Chat-{to_user.username}"}
+        return render(request, "main/message_user.html", context)
+    except Exception as e:
+        print(e)
         return render(request, "main/page_not_found.html")
 
 
